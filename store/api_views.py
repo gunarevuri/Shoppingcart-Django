@@ -44,32 +44,41 @@ class ProductCreation(CreateAPIView):
 			raise ValidationError({'price':'valid error'})
 		return super().create(request,*args, **kwargs)
 
-
-class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+class ProductDestroy(DestroyAPIView):
+	serializer_class = ProductSerializer
 	queryset = Product.objects.all()
 	lookup_field = 'id'
-	serializer_class = ProductSerializer
 
 	def delete(self, request, *args, **kwargs):
 		product_id = request.data.get('id')
-		response = super().delete(request, *args, **kwargs)
-		if response.status_code == 204:
-			from django.core.cache import cache
-			cache.delete('product_data_{}'.format(product_id))
+		response = super().delete(request , *args, **kwargs)
 		return response
 
-	def update(self, request, *args, **kwargs):
-		response = super().update(request, *args, **kwargs)
-		if response.status_code == 200:
-			from django.core.cache import cache
-			product = response.data
-			cache.set('product_data_{}'.format(product['id']),{
-				'name': product['name'],
-				'description': product['description'],
-				'price': product['price'],
+# class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+# 	queryset = Product.objects.all()
+# 	lookup_field = 'id'
+# 	serializer_class = ProductSerializer
 
-				})
-		return response
+# 	def delete(self, request, *args, **kwargs):
+# 		product_id = request.data.get('id')
+# 		response = super().delete(request, *args, **kwargs)
+# 		if response.status_code == 204:
+# 			from django.core.cache import cache
+# 			cache.delete('product_data_{}'.format(product_id))
+# 		return response
+
+# 	def update(self, request, *args, **kwargs):
+# 		response = super().update(request, *args, **kwargs)
+# 		if response.status_code == 200:
+# 			from django.core.cache import cache
+# 			product = response.data
+# 			cache.set('product_data_{}'.format(product['id']),{
+# 				'name': product['name'],
+# 				'description': product['description'],
+# 				'price': product['price'],
+
+# 				})
+# 		return response
 
 class ProductStats(GenericAPIView):
 	lookup_field='id'
