@@ -1,4 +1,4 @@
-from rest_framework.generics import ListAPIView, CreateAPIView,DestroyAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView,DestroyAPIView, RetrieveUpdateDestroyAPIView, GenericAPIView,RetrieveAPIView, UpdateAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import LimitOffsetPagination
@@ -53,6 +53,35 @@ class ProductDestroy(DestroyAPIView):
 		product_id = request.data.get('id')
 		response = super().delete(request , *args, **kwargs)
 		return response
+
+class ProductRetrieve(RetrieveAPIView):
+	serializer_class = ProductSerializer
+	queryset = Product.objects.all()
+	lookup_field = 'id'
+
+	def Retrieve(self, request, *args, **kwargs):
+		product = request.data.get('id')
+		response = super().retrieve(request, *args, **kwargs)
+		return response
+
+
+
+
+
+class ProductUpdate(UpdateAPIView):
+	serializer_class = ProductSerializer
+	queryset = Product.objects.all()
+	lookup_field = 'id'
+
+	def update(self, request, *args, **kwargs):
+		response = super().update(request, *args, **kwargs)
+		return response
+
+
+
+
+
+
 
 # class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
 # 	queryset = Product.objects.all()
