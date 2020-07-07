@@ -38,6 +38,18 @@ class ProductListTestCase(APITestCase):
 
 
 
+class ProductUpdateTestCase(APITestCase):
+	def test_update_product(self):
+		product = Product.objects.first()
+		prod_data = {
+		"name":"updated name",
+		"description":"updated description",
+		"price": "123",
+		}
+		response = self.client.patch('/api/products/{}/update/'.format(product.id),prod_data,format = 'json')
+		update = Product.objects.get(id = product.id)
+		self.assertEqual(update.name , "updated name")
+
 
 
 
