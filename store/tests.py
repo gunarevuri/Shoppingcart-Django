@@ -26,3 +26,18 @@ class ProductDestroyTestCase(APITestCase):
 		# self.assertEqual(response.status_code, 204)
 		print(initial_products_count)
 		self.assertEqual(Product.objects.count(), initial_products_count-1)
+
+class ProductListTestCase(APITestCase):
+	def test_list_products(self):
+		products = Product.objects.count()
+		response = self.client.get('/api/products/')
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(response.data['count'], products)
+		self.assertIsNone(response.data['next'])
+		self.assertIsNone(response.data['previous'])
+
+
+
+
+
+
