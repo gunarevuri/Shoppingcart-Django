@@ -23,15 +23,18 @@ class ProductSerializer(serializers.ModelSerializer):
 	cart_items = serializers.SerializerMethodField()
 	price = serializers.DecimalField(
 		min_value = 1.00, max_value=10000, max_digits = None, decimal_places = 2)
+	# time format hout/minute am/pm date month year"
 	sale_start = serializers.DateTimeField(
+		required=False,
 		input_formats = ['%I:%M %p %d %B %Y'], format = None, allow_null = True,
 		help_text='Accepted format is "12:01 AM 7 June 2020"',
 		style = {'input_type': 'text', 'placeholder':'12:01 AM June 2020'},
 	)
 	sale_end = serializers.DateTimeField(
+		required=False,
 		input_formats = ['%I:%M %p %d %B %Y'], format = None, allow_null = True,
 		help_text='Accepted format is "12:01 AM 7 June 2020"',
-		style = {'input_type': 'text', 'placeholder':'12:01 AM June 2020'},
+		style = {'input_type': 'text', 'placeholder': '12:01 AM June 2020'},
 	)
 	photo = serializers.ImageField(default = None)
 

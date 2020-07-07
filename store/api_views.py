@@ -58,15 +58,12 @@ class ProductRetrieve(RetrieveAPIView):
 	serializer_class = ProductSerializer
 	queryset = Product.objects.all()
 	lookup_field = 'id'
+	template_name = 'store/product.html'
 
 	def Retrieve(self, request, *args, **kwargs):
 		product = request.data.get('id')
 		response = super().retrieve(request, *args, **kwargs)
 		return response
-
-
-
-
 
 class ProductUpdate(UpdateAPIView):
 	serializer_class = ProductSerializer
@@ -81,45 +78,43 @@ class ProductUpdate(UpdateAPIView):
 
 
 
+class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+	queryset = Product.objects.all()
+	lookup_field = 'id'
+	serializer_class = ProductSerializer
 
+	def delete(self, request, *args, **kwargs):
+		product_id = request.data.get('id')
+		response = super().delete(request, *args, **kwargs)
+		if response.status_code == 204:
+			from django.core.cache import cache
+			cache.delete('product_data_{}'.format(product_id))
+		return response
 
-# class ProductRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
-# 	queryset = Product.objects.all()
-# 	lookup_field = 'id'
-# 	serializer_class = ProductSerializer
+	def update(self, request, *args, **kwargs):
+		response = super().update(request, *args, **kwargs)
+		if response.status_code == 200:
+			from django.core.cache import cache
+			product = response.data
+			cache.set('product_data_{}'.format(product['id']),{
+				'name': product['name'],
+				'description': product['description'],
+				'price': product['price'],
 
-# 	def delete(self, request, *args, **kwargs):
-# 		product_id = request.data.get('id')
-# 		response = super().delete(request, *args, **kwargs)
-# 		if response.status_code == 204:
-# 			from django.core.cache import cache
-# 			cache.delete('product_data_{}'.format(product_id))
-# 		return response
-
-# 	def update(self, request, *args, **kwargs):
-# 		response = super().update(request, *args, **kwargs)
-# 		if response.status_code == 200:
-# 			from django.core.cache import cache
-# 			product = response.data
-# 			cache.set('product_data_{}'.format(product['id']),{
-# 				'name': product['name'],
-# 				'description': product['description'],
-# 				'price': product['price'],
-
-# 				})
-# 		return response
+				})
+		return response
 
 class ProductStats(GenericAPIView):
 	lookup_field='id'
 	serializer_class = ProductStatSerializer
 	queryset = Product.objects.all()
-
+# data that is statistics 
 	def get(self, request, format = None, id = None):
 		obj = self.get_object()
 		serializer = ProductStatSerializer({
 			'stats': {
-			'2020-07-01':[5,29,9,8],
-			'2020-07-02': [3,5,34,89],
+			'2020-07-07':[5,29,9,8],
+			'2020-07-010': [3,5,34,89],
 			}
 		})
 

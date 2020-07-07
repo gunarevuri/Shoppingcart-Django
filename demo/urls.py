@@ -12,6 +12,7 @@ urlpatterns = [
 	path('api/products/delete/<int:id>/', store.api_views.ProductDestroy.as_view(), name= 'productdestroy'),
 	path('api/products/<int:id>/update/', store.api_views.ProductUpdate.as_view()),
 	path('api/products/<int:id>/', store.api_views.ProductRetrieve.as_view(),name='productretrieve'),
+	path('api/products/updatedestroyretrieve/<int:id>/', store.api_views.ProductRetrieveUpdateDestroy.as_view(), name='ProductRetrieveUpdateDestroy'),
 	path('api/products/<int:id>/stats/', store.api_views.ProductStats.as_view()),
 
     path('admin/', admin.site.urls),
